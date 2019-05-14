@@ -20,14 +20,27 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+app.get('/languages', (req, res) => {
+  const params = [
+    { id:'en', language:'English' },
+    { id:'fi', language:'Finnish' },
+    { id:'de', language:'German' },
+    { id:'ru', language:'Russian' }];
+  res.status(200).send(params).end();
+});
+
 app.post('/', (req, res) => {
   const timestamp = req.body.timestamp ? req.body.timestamp : undefined;
   const message = req.body.message ? req.body.message : undefined;
+  const user = req.body.user ? req.body.user : undefined;
   const address = req.connection.remoteAddress;
   console.log(`-- New connection from ${address} --`);
 
-  if (timestamp && message) {
+  console.log(timestamp, message, user)
+  if (timestamp && message && user) {
     console.log('1.', message);
+    
+      /*
     translateMagic(message)
       .then(result => {
         const data = {timestamp: timestamp, message: result[0], original: message, origin: address, route: result[1]};
@@ -38,12 +51,12 @@ app.post('/', (req, res) => {
         res.status(200).send(newKey).end();
       })
       .catch(error => console.log(error));
-      /*
-     const data = { timestamp: timestamp, message: message, origin: address };
+      
+      */
+     const data = { timestamp: timestamp, message: message, origin: address, user: user };
      console.log('--- END ---');
      ref.push(data);
      res.status(200).send("OK").end();
-      */
   } else {
     res.status(400).send('Required information missing!').end();
   }
